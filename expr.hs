@@ -125,17 +125,14 @@ eval ev =
             case expr of
                 ExprInt 0 -> ExprBool True
                 _ -> ExprBool False
--- TODO
             {-Produce an ExprBool True if the integer expression
                is equal to zero, or ExprBool False if it isn't -}
         step (ExprIf condition ifpart elsepart) =
-
-            case condition of
+            let cond = step condition
+            in case cond of
                 ExprBool True -> ifpart
                 ExprBool False -> elsepart
-                ExprIsZero _ -> ExprInt 900
-
--- TODO
+                ExprIsZero _ -> ExprInt 99
             {-Returns the value of the ifpart expression if
                cond evaluates to true, or elsepart otherwise-}
 
