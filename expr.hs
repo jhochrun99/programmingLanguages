@@ -128,11 +128,10 @@ eval ev =
             {-Produce an ExprBool True if the integer expression
                is equal to zero, or ExprBool False if it isn't -}
         step (ExprIf condition ifpart elsepart) =
-            let cond = step condition
+            let ExprBool cond = step condition
             in case cond of
-                ExprBool True -> ifpart
-                ExprBool False -> elsepart
-                ExprIsZero _ -> ExprInt 99
+                True -> step ifpart
+                False -> step elsepart
             {-Returns the value of the ifpart expression if
                cond evaluates to true, or elsepart otherwise-}
 
