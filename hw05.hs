@@ -54,3 +54,28 @@ bigTree = bigBuilder 0
 
 bigBuilder :: Integer -> Tree Integer
 bigBuilder n = Node n (bigBuilder (n+1)) (bigBuilder (n+1))
+
+--7
+collatz :: Integer -> Stream Integer
+collatz a
+    | odd a = Chunk a (collatz ((3*a)+1))
+    | even a = Chunk a (collatz (a `div` 2)) -- / gives 'no instance for fractional integer'
+
+--8
+collatzLength :: Integer -> Integer
+collatzLength 1 = 0
+collatzLength n = 1 + x where
+    x = case collatz n of
+      Chunk v1 (Chunk v2 next) ->
+        case v2 of
+          1 -> 0
+          other -> collatzLength v2
+
+--9
+longestCollatz :: Integer -> Integer
+longestCollatz 1 = 1
+longestCollatz n =
+    let n1 = longestCollatz (n-1) in case
+      (collatzLength n) >= (collatzLength n1) of
+        True -> n
+        False -> n1
