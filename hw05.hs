@@ -50,10 +50,10 @@ data Tree a = Node a (Tree a) (Tree a)
             deriving Show
 
 bigTree :: Tree Integer
-bigTree = bigBuilder 0
+bigTree = builder 0
 
-bigBuilder :: Integer -> Tree Integer
-bigBuilder n = Node n (bigBuilder (n+1)) (bigBuilder (n+1))
+builder :: Integer -> Tree Integer
+builder n = Node n (builder (n+1)) (builder (n+1))
 
 --7
 collatz :: Integer -> Stream Integer
