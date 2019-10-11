@@ -160,12 +160,29 @@ exec initial_env prog =
     where
         step :: InterpreterStatus -> Statement -> InterpreterStatus
         step (InterpreterStatus (Just err) env out) _ = (InterpreterStatus (Just err) env out)
-        step (InterpreterStatus err env out) (StatementAssign vname expr) =
-            InterpreterStatus (Just GeneralError) env out -- TODO: replace this
+        
+         step (InterpreterStatus err env out) (StatementAssign vname expr) =
+            case eval env expr of
+                ResultInt int -> InterpreterStatus err (Map.insert vname (VarInt int) env) out
+                ResultBool bool -> InterpreterStatus err (Map.insert vname (VarBool bool) env)
+                _ -> InterpreterStatus (Just GeneralError) env out
+
         step (InterpreterStatus err env out) (StatementPrint expr) =
-            InterpreterStatus (Just GeneralError) env out -- TODO: replace this
+            case eval env expr of
+                ResultInt int -> InterpreterStatus err env (out ++ [show int])
+                ResultBool bool -> InterpreterStatus err env (out ++ [show bool])
+                _ -> InterpreterStatus (Just GeneralError) env out
+
         step (InterpreterStatus err env out) (StatementIf condition ifpart elsepart) =
-            InterpreterStatus (Just GeneralError) env out -- TODO: replace this
+            case eval env condition of
+                ResultBool True -> step2 (InterpreterStatus err env out) ifpart
+                ResultBool False -> step2 (InterpreterStatus err env out) elsepart
+                _ -> InterpreterStatus (Just GeneralError) env out
+            where step2 :: InterpreterStatus -> [Statement] -> InterpreterStatus
+                  step2 status [] = status
+                  step2 status (h:t) = case step status h of
+                      (InterpreterStatus (Just err) env out) -> (InterpreterStatus (Just err)
+                      status2 -> step2 status2 t
 
 -- |Call this function to test your exec function
 test_exec :: String
