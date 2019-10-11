@@ -181,7 +181,6 @@ exec initial_env prog =
             where step2 :: InterpreterStatus -> [Statement] -> InterpreterStatus
                   step2 status [] = status
                   step2 status (h:t) = case step status h of
-                      (InterpreterStatus (Just err) env out) -> (InterpreterStatus (Just err)
                       status2 -> step2 status2 t
 
 -- |Call this function to test your exec function
